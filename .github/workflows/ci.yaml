@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  format-and-build:
+    name: Format Check & Debug Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            clang-format \
+            libopencv-dev \
+            cmake \
+            build-essential
+
+      - name: Install Task
+        run: |
+          curl -sL "https://github.com/go-task/task/releases/latest/download/task_linux_amd64.tar.gz" | tar xz
+          sudo mv task /usr/local/bin/
+
+      - name: Check format
+        run: task format:check
+
+      - name: Build (Debug)
+        run: task build

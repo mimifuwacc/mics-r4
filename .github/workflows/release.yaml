@@ -1,0 +1,112 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  release-build-linux:
+    name: Release Build (Linux)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libopencv-dev \
+            cmake \
+            build-essential
+
+      - name: Install Task
+        run: |
+          curl -sL "https://github.com/go-task/task/releases/latest/download/task_linux_amd64.tar.gz" | tar xz
+          sudo mv task /usr/local/bin/
+
+      - name: Build main (Release)
+        run: task build:release
+
+      - name: Strip binary
+        run: strip bin/main || true
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: binary-linux
+          path: bin/main
+
+  release-build-macos:
+    name: Release Build (macOS)
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: brew install opencv
+
+      - name: Install Task
+        run: brew install go-task/tap/go-task
+
+      - name: Build main (Release)
+        run: task build:release
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: binary-macos
+          path: bin/main
+
+  create-release:
+    name: Create Release
+    runs-on: macos-latest
+    needs: [release-build-linux, release-build-macos]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: binary-linux
+          path: binary-linux
+
+      - name: Download macOS artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: binary-macos
+          path: binary-macos
+
+      - name: Prepare release files
+        run: |
+          chmod +x binary-linux/* binary-macos/*
+          ls -la binary-linux/
+          ls -la binary-macos/
+
+      - name: Create Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=$(date +%Y%m%d-%H%M%S)
+          gh release create "release-$VERSION" \
+            --notes "Auto-generated release from commit ${{ github.sha }}" \
+            --title "Release $VERSION" || true
+
+      - name: Upload Linux binary to Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=$(date +%Y%m%d-%H%M%S)
+          gh release upload "release-$VERSION" binary-linux/main --c main
+
+      - name: Upload macOS binary to Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=$(date +%Y%m%d-%H%M%S)
+          gh release upload "release-$VERSION" binary-macos/main --c "macOS main"
