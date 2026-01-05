@@ -84,6 +84,8 @@ jobs:
       - name: Prepare release files
         run: |
           chmod +x binary-linux/* binary-macos/*
+          mv binary-linux/main binary-linux/main-linux
+          mv binary-macos/main binary-macos/main-macos
           ls -la binary-linux/
           ls -la binary-macos/
 
@@ -101,11 +103,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION=$(date +%Y%m%d-%H%M%S)
-          gh release upload "release-$VERSION" binary-linux/main --label "Linux"
+          gh release upload "release-$VERSION" binary-linux/main-linux
 
       - name: Upload macOS binary to Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION=$(date +%Y%m%d-%H%M%S)
-          gh release upload "release-$VERSION" binary-macos/main --label "macOS"
+          gh release upload "release-$VERSION" binary-macos/main-macos
