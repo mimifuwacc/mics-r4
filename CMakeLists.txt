@@ -12,15 +12,14 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 # OpenCVの検索
 find_package(OpenCV REQUIRED)
 
-# Google Testの有効化（テスト時のみ）
+# Google Testの有効化
 include(FetchContent)
 FetchContent_Declare(
   googletest
   GIT_REPOSITORY https://github.com/google/googletest.git
   GIT_TAG release-1.12.1
 )
-# まだGoogle Testを利用しない場合はコメントアウト
-# FetchContent_MakeAvailable(googletest)
+FetchContent_MakeAvailable(googletest)
 
 # ソースファイルの設定
 set(SOURCES
@@ -35,7 +34,11 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 add_executable(main src/chainhash.cc src/main.cc)
 target_link_libraries(main ${OpenCV_LIBS})
 
-# テスト（有効化する場合はコメントを外す）
-# enable_testing()
-# add_executable(chainhash_test tests/chainhash_test.cc)
-# target_link_libraries(chainhash_test gtest_main gmock_main)
+# テスト
+enable_testing()
+
+add_executable(chainhash_test tests/chainhash_test.cc src/chainhash.cc)
+target_link_libraries(chainhash_test gtest gmock gtest_main)
+
+include(GoogleTest)
+gtest_discover_tests(chainhash_test)

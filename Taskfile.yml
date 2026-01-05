@@ -72,7 +72,7 @@ tasks:
   test:
     desc: テストを実行
     deps:
-      - build:main
+      - build
     cmds:
       - cd {{.BUILD_DIR}} && ctest --output-on-failure
 
