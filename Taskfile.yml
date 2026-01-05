@@ -10,116 +10,72 @@ tasks:
   default:
     desc: メインタスクを表示
     cmds:
-      - task -l
+      - task --list-all --sort none
 
-  # Debugビルド
-  build:debug:
+  setup:
+    desc: 開発環境をセットアップ
+    cmds:
+      - mkdir -p {{.BUILD_DIR}}
+      - mkdir -p {{.BIN_DIR}}
+
+  build:
     desc: デバッグビルド (-Wall -g)
     deps:
-      - build:prepare
+      - setup
     cmds:
       - cd {{.BUILD_DIR}} && cmake -DCMAKE_BUILD_TYPE=Debug .. && make
-      - echo "✓ Debugビルド完了"
+      - cp {{.BUILD_DIR}}/main {{.BIN_DIR}}/
 
-  # Releaseビルド
   build:release:
     desc: リリースビルド (-Wall -O2)
     deps:
-      - build:prepare
+      - setup
     cmds:
       - cd {{.BUILD_DIR}} && cmake -DCMAKE_BUILD_TYPE=Release .. && make
-      - echo "✓ Releaseビルド完了"
+      - cp {{.BUILD_DIR}}/main {{.BIN_DIR}}/
 
-  # デフォルトのビルド（Debug）
-  build:main:
-    desc: メインプロジェクトをビルド（Debugモード）
+  build:mnistview:
+    desc: mnistviewをデバッグビルド
+    deps:
+      - setup
+    dir: tools/mnistview
     cmds:
-      - task: build:debug
+      - mkdir -p build
+      - cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && make
+      - cp build/mnistview ../../{{.BIN_DIR}}/
 
-  build:prepare:
-    desc: ビルドディレクトリを作成
+  build:mnistview:release:
+    desc: mnistviewをリリースビルド
+    deps:
+      - setup
+    dir: tools/mnistview
     cmds:
-      - mkdir -p {{.BUILD_DIR}}
+      - mkdir -p build
+      - cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && make
+      - cp build/mnistview ../../{{.BIN_DIR}}/
 
   build:clean:
     desc: ビルドファイルをクリーン
     cmds:
       - rm -rf {{.BUILD_DIR}}/*
 
-  build:rebuild:
-    desc: クリーンしてからビルドし直す
-    deps:
-      - build:clean
-      - build:main
-
-  run:chainhash:
-    desc: chainhashを実行
-    deps:
-      - build:main
+  run:
+    desc: メインプログラムを実行
     cmds:
-      - ./{{.BUILD_DIR}}/chainhash {{.CLI_ARGS}}
+      - ./{{.BIN_DIR}}/main {{.CLI_ARGS}}
 
-  # mnistview Debugビルド
-  tools:mnistview:build:debug:
-    desc: mnistviewをデバッグビルド
-    dir: tools/mnistview
-    cmds:
-      - mkdir -p build
-      - cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && make
-      - cp build/mnistview ../../{{.BIN_DIR}}/
-      - echo "✓ mnistview Debugビルド完了"
-
-  # mnistview Releaseビルド
-  tools:mnistview:build:release:
-    desc: mnistviewをリリースビルド
-    dir: tools/mnistview
-    cmds:
-      - mkdir -p build
-      - cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && make
-      - cp build/mnistview ../../{{.BIN_DIR}}/
-      - echo "✓ mnistview Releaseビルド完了"
-
-  # デフォルトのmnistviewビルド（Debug）
-  tools:mnistview:build:
-    desc: mnistviewをビルド（Debugモード）
-    cmds:
-      - task: tools:mnistview:build:debug
-
-  tools:mnistview:run:
+  run:mnistview:
     desc: mnistviewを実行
-    deps:
-      - tools:mnistview:build
     cmds:
       - ./{{.BIN_DIR}}/mnistview {{.CLI_ARGS}}
 
-  test:run:
+  test:
     desc: テストを実行
     deps:
       - build:main
     cmds:
       - cd {{.BUILD_DIR}} && ctest --output-on-failure
 
-  clean:
-    desc: すべての生成物を削除
-    cmds:
-      - rm -rf {{.BUILD_DIR}}
-      - rm -rf {{.BIN_DIR}}
-      - rm -rf tools/mnistview/build
-
-  cmake:configure:
-    desc: CMakeを設定
-    deps:
-      - build:prepare
-    cmds:
-      - cd {{.BUILD_DIR}} && cmake ..
-
-  dev:setup:
-    desc: 開発環境をセットアップ
-    deps:
-      - build:prepare
-      - cmake:configure
-
-  # フォーマット関連
   format:
     desc: すべてのC++ファイルをフォーマット
     cmds:
@@ -127,8 +83,6 @@ tasks:
       - echo "✓ フォーマット完了"
 
   format:check:
-    desc: フォーマットのチェック（変更があればエラー）
+    desc: フォーマットのチェック
     cmds:
       - find . -name "*.cc" -o -name "*.cpp" -o -name "*.h" -o -name "*.hpp" | xargs clang-format --dry-run --Werror
-
-
