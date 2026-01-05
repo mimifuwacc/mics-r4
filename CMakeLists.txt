@@ -29,10 +29,11 @@ set(SOURCES
 
 # ヘッダーファイルのインクルードパス
 include_directories(${OpenCV_INCLUDE_DIRS})
+include_directories(${CMAKE_SOURCE_DIR}/include)
 
 # 実行ファイルのビルド
-add_executable(chainhash src/chainhash.cc)
-target_link_libraries(chainhash ${OpenCV_LIBS})
+add_executable(main src/chainhash.cc src/main.cc)
+target_link_libraries(main ${OpenCV_LIBS})
 
 # テスト（有効化する場合はコメントを外す）
 # enable_testing()
