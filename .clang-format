@@ -1,0 +1,34 @@
+# Clang-Format設定ファイル
+# ベースはGoogleスタイルを使用
+
+BasedOnStyle: Google
+
+# ポインタと参照の配置
+# 左寄せ: int* a
+DerivePointerAlignment: false
+PointerAlignment: Left
+
+# インデント
+IndentWidth: 2
+TabWidth: 2
+UseTab: Never
+
+# 1行の最大文字数
+ColumnLimit: 80
+
+# 改行と空白
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+
+# クラスや構造体のアクセス修飾子の前に改行を入れない
+EmptyLineBeforeAccessModifier: LogicalBlock
+
+# コメントのフォーマット
+ReflowComments: true
+
+# namespaceのインデント
+NamespaceIndentation: None
+
+# インクルードのソート
+SortIncludes: false

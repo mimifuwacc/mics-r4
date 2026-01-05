@@ -10,13 +10,6 @@ Makefile
 *.cmake
 !CMakeLists.txt
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
 # macOS
 .DS_Store
 
