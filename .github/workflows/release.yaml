@@ -17,7 +17,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            libopencv-dev \
             cmake \
             build-essential
 
@@ -102,11 +101,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION=$(date +%Y%m%d-%H%M%S)
-          gh release upload "release-$VERSION" binary-linux/main --c main
+          gh release upload "release-$VERSION" binary-linux/main --label "Linux"
 
       - name: Upload macOS binary to Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION=$(date +%Y%m%d-%H%M%S)
-          gh release upload "release-$VERSION" binary-macos/main --c "macOS main"
+          gh release upload "release-$VERSION" binary-macos/main --label "macOS"
