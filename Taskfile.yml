@@ -4,6 +4,7 @@ vars:
   PROJECT_NAME: mics-r4
   BUILD_DIR: build
   BIN_DIR: bin
+  BUILD_TYPE: Debug
 
 tasks:
   default:
@@ -11,17 +12,34 @@ tasks:
     cmds:
       - task -l
 
+  # Debugビルド
+  build:debug:
+    desc: デバッグビルド (-Wall -g)
+    deps:
+      - build:prepare
+    cmds:
+      - cd {{.BUILD_DIR}} && cmake -DCMAKE_BUILD_TYPE=Debug .. && make
+      - echo "✓ Debugビルド完了"
+
+  # Releaseビルド
+  build:release:
+    desc: リリースビルド (-Wall -O2)
+    deps:
+      - build:prepare
+    cmds:
+      - cd {{.BUILD_DIR}} && cmake -DCMAKE_BUILD_TYPE=Release .. && make
+      - echo "✓ Releaseビルド完了"
+
+  # デフォルトのビルド（Debug）
+  build:main:
+    desc: メインプロジェクトをビルド（Debugモード）
+    cmds:
+      - task: build:debug
+
   build:prepare:
     desc: ビルドディレクトリを作成
     cmds:
       - mkdir -p {{.BUILD_DIR}}
-
-  build:main:
-    desc: メインプロジェクトをビルド
-    deps:
-      - build:prepare
-    cmds:
-      - cd {{.BUILD_DIR}} && cmake .. && make
 
   build:clean:
     desc: ビルドファイルをクリーン
@@ -41,13 +59,31 @@ tasks:
     cmds:
       - ./{{.BUILD_DIR}}/chainhash {{.CLI_ARGS}}
 
-  tools:mnistview:build:
-    desc: mnistviewをビルド
+  # mnistview Debugビルド
+  tools:mnistview:build:debug:
+    desc: mnistviewをデバッグビルド
     dir: tools/mnistview
     cmds:
       - mkdir -p build
-      - cd build && cmake .. && make
+      - cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && make
       - cp build/mnistview ../../{{.BIN_DIR}}/
+      - echo "✓ mnistview Debugビルド完了"
+
+  # mnistview Releaseビルド
+  tools:mnistview:build:release:
+    desc: mnistviewをリリースビルド
+    dir: tools/mnistview
+    cmds:
+      - mkdir -p build
+      - cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && make
+      - cp build/mnistview ../../{{.BIN_DIR}}/
+      - echo "✓ mnistview Releaseビルド完了"
+
+  # デフォルトのmnistviewビルド（Debug）
+  tools:mnistview:build:
+    desc: mnistviewをビルド（Debugモード）
+    cmds:
+      - task: tools:mnistview:build:debug
 
   tools:mnistview:run:
     desc: mnistviewを実行
@@ -82,3 +118,4 @@ tasks:
     deps:
       - build:prepare
       - cmake:configure
+
