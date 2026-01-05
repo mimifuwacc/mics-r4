@@ -89,25 +89,18 @@ jobs:
           ls -la binary-linux/
           ls -la binary-macos/
 
-      - name: Create Release
+      - name: Set version and create release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION=$(date +%Y%m%d-%H%M%S)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
           gh release create "release-$VERSION" \
             --notes "Auto-generated release from commit ${{ github.sha }}" \
-            --title "Release $VERSION" || true
+            --title "Release $VERSION"
 
-      - name: Upload Linux binary to Release
+      - name: Upload binaries to Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          VERSION=$(date +%Y%m%d-%H%M%S)
-          gh release upload "release-$VERSION" binary-linux/main-linux
-
-      - name: Upload macOS binary to Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          VERSION=$(date +%Y%m%d-%H%M%S)
-          gh release upload "release-$VERSION" binary-macos/main-macos
+          gh release upload "release-$VERSION" binary-linux/main-linux binary-macos/main-macos
