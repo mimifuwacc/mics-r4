@@ -1,0 +1,84 @@
+version: "3"
+
+vars:
+  PROJECT_NAME: mics-r4
+  BUILD_DIR: build
+  BIN_DIR: bin
+
+tasks:
+  default:
+    desc: メインタスクを表示
+    cmds:
+      - task -l
+
+  build:prepare:
+    desc: ビルドディレクトリを作成
+    cmds:
+      - mkdir -p {{.BUILD_DIR}}
+
+  build:main:
+    desc: メインプロジェクトをビルド
+    deps:
+      - build:prepare
+    cmds:
+      - cd {{.BUILD_DIR}} && cmake .. && make
+
+  build:clean:
+    desc: ビルドファイルをクリーン
+    cmds:
+      - rm -rf {{.BUILD_DIR}}/*
+
+  build:rebuild:
+    desc: クリーンしてからビルドし直す
+    deps:
+      - build:clean
+      - build:main
+
+  run:chainhash:
+    desc: chainhashを実行
+    deps:
+      - build:main
+    cmds:
+      - ./{{.BUILD_DIR}}/chainhash {{.CLI_ARGS}}
+
+  tools:mnistview:build:
+    desc: mnistviewをビルド
+    dir: tools/mnistview
+    cmds:
+      - mkdir -p build
+      - cd build && cmake .. && make
+      - cp build/mnistview ../../{{.BIN_DIR}}/
+
+  tools:mnistview:run:
+    desc: mnistviewを実行
+    deps:
+      - tools:mnistview:build
+    cmds:
+      - ./{{.BIN_DIR}}/mnistview {{.CLI_ARGS}}
+
+  test:run:
+    desc: テストを実行
+    deps:
+      - build:main
+    cmds:
+      - cd {{.BUILD_DIR}} && ctest --output-on-failure
+
+  clean:
+    desc: すべての生成物を削除
+    cmds:
+      - rm -rf {{.BUILD_DIR}}
+      - rm -rf {{.BIN_DIR}}
+      - rm -rf tools/mnistview/build
+
+  cmake:configure:
+    desc: CMakeを設定
+    deps:
+      - build:prepare
+    cmds:
+      - cd {{.BUILD_DIR}} && cmake ..
+
+  dev:setup:
+    desc: 開発環境をセットアップ
+    deps:
+      - build:prepare
+      - cmake:configure

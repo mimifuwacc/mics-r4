@@ -1,0 +1,27 @@
+# ビルドディレクトリ
+build/
+bin/
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+!CMakeLists.txt
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+
+# テスト
+Testing/
+
+# 一時ファイル
+*.log
