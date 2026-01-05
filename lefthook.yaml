@@ -1,0 +1,7 @@
+pre-commit:
+  commands:
+    format:
+      run: clang-format -i {staged_files}
+      glob: "*.{cc,cpp,h,hpp}"
+    git-update:
+      run: git update-index --again

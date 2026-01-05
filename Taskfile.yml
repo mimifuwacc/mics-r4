@@ -119,3 +119,16 @@ tasks:
       - build:prepare
       - cmake:configure
 
+  # フォーマット関連
+  format:
+    desc: すべてのC++ファイルをフォーマット
+    cmds:
+      - find . -name "*.cc" -o -name "*.cpp" -o -name "*.h" -o -name "*.hpp" | xargs clang-format -i
+      - echo "✓ フォーマット完了"
+
+  format:check:
+    desc: フォーマットのチェック（変更があればエラー）
+    cmds:
+      - find . -name "*.cc" -o -name "*.cpp" -o -name "*.h" -o -name "*.hpp" | xargs clang-format --dry-run --Werror
+
+

@@ -17,10 +17,11 @@
   "editor.insertSpaces": true,
   "editor.rulers": [80],
 
-  // C++拡張機能の設定
+  // C++拡張機能の設定（.clang-formatファイルを使用）
   "C_Cpp.intelliSenseEngine": "default",
   "C_Cpp.autocomplete": "default",
   "C_Cpp.errorSquiggles": "enabled",
-  "C_Cpp.clang_format_style": "Google",
+  "C_Cpp.clang_format_style": "file",
+  "C_Cpp.clang_format_fallbackStyle": "none",
   "C_Cpp.clang_format_sortIncludes": false
 }

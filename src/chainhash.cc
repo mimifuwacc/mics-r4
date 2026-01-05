@@ -8,40 +8,32 @@ typedef unsigned int uint;
 typedef uint Item;
 
 // ハッシュバケツ
-typedef struct Bucket
-{
+typedef struct Bucket {
   // uint hash_value; //後に使用する
   vector<Item> Items;
 } Bucket;
 
 // ハッシュテーブル
-typedef struct HashTable
-{
-  uint table_size;        // テーブルサイズ
-  vector<Bucket> buckets; // バケツの配列
+typedef struct HashTable {
+  uint table_size;         // テーブルサイズ
+  vector<Bucket> buckets;  // バケツの配列
 } HashTable;
 
 typedef vector<Item> Database;
 
 // ハッシュ関数　tablesizeで割った余りをハッシュ値とする
-uint myhash(Item i, uint tablesize)
-{
-
+uint myhash(Item i, uint tablesize) {
   return i % tablesize;
 }
 
 // ハッシュテーブルへの挿入
-void insert(Item data, HashTable &table)
-{
-
+void insert(Item data, HashTable& table) {
   uint index = myhash(data, table.table_size);
   table.buckets[index].Items.push_back(data);
 }
 
 // ハッシュテーブルからの探索
-bool search(Item query, HashTable &table)
-{
-
+bool search(Item query, HashTable& table) {
   uint index = myhash(query, table.table_size);
 
   bool isfound = false;
@@ -53,9 +45,7 @@ bool search(Item query, HashTable &table)
   return isfound;
 }
 
-int main(int argc, char *argv[])
-{
-
+int main(int argc, char* argv[]) {
   HashTable tab;
   uint i;
 
@@ -64,7 +54,7 @@ int main(int argc, char *argv[])
 
   // ハッシュテーブル初期化
   tab.table_size = table_size;
-  tab.buckets.resize(table_size); // bucketsの要素数を設定
+  tab.buckets.resize(table_size);  // bucketsの要素数を設定
 
   // for(i=0;i<table_size;i++){ //後に使用する
   //   tab.buckets[i].hash_value = 0xffffffff;
@@ -75,13 +65,11 @@ int main(int argc, char *argv[])
   uint dbsize = atoi(argv[2]);
 
   // データベース生成
-  for (i = 0; i < dbsize; i++)
-  {
+  for (i = 0; i < dbsize; i++) {
     bool isnewitem = false;
     Item cand;
     // 二重登録しないための確認
-    do
-    {
+    do {
       uint j;
       cand = rand() % 10000;
       for (j = 0; j < db.size(); j++)
@@ -99,13 +87,13 @@ int main(int argc, char *argv[])
     cout << db[i] << endl;
 
   // データのハッシュテーブルへの登録
-  for (i = 0; i < db.size(); i++)
-  {
+  for (i = 0; i < db.size(); i++) {
     insert(db[i], tab);
   }
 
   // 検索処理
-  Item query = db[rand() % db.size()]; // データベースの要素をquery(検索対象)に選ぶ
+  Item query =
+      db[rand() % db.size()];  // データベースの要素をquery(検索対象)に選ぶ
 
   if (search(query, tab))
     cout << "query exists in the database " << endl;
