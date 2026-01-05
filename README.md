@@ -25,7 +25,7 @@ mics-r4/
 - C++17
 - googletest 1.17.x
 
-(タスクランナーとして[task](https://github.com/go-task/task)の導入を推奨)
+(タスクランナーとして[task](https://github.com/go-task/task)、及び pre-commit のために[lefthook](https://lefthook.dev/) の導入を推奨)
 
 ## 開発補助ツール
 
