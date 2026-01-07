@@ -16,7 +16,7 @@ TEST(HashTest, EdgeCases) {
 
 // insertとsearchのテスト
 TEST(HashTableTest, InsertAndSearch) {
-  HashTable table;
+  ChainHashTable table;
   table.table_size = 10;
   table.buckets.resize(10);
 
@@ -33,7 +33,7 @@ TEST(HashTableTest, InsertAndSearch) {
 }
 
 TEST(HashTableTest, MultipleItemsSameBucket) {
-  HashTable table;
+  ChainHashTable table;
   table.table_size = 10;
   table.buckets.resize(10);
 
@@ -51,7 +51,7 @@ TEST(HashTableTest, MultipleItemsSameBucket) {
 }
 
 TEST(HashTableTest, EmptyTable) {
-  HashTable table;
+  ChainHashTable table;
   table.table_size = 10;
   table.buckets.resize(10);
 
@@ -61,7 +61,7 @@ TEST(HashTableTest, EmptyTable) {
 }
 
 TEST(HashTableTest, LargeDataset) {
-  HashTable table;
+  ChainHashTable table;
   table.table_size = 100;
   table.buckets.resize(100);
 

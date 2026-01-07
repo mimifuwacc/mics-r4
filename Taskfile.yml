@@ -74,13 +74,12 @@ tasks:
     deps:
       - build
     cmds:
-      - cd {{.BUILD_DIR}} && ctest --output-on-failure
+      - sh -c 'if [ -n "{{.CLI_ARGS}}" ]; then cd {{.BUILD_DIR}} && ctest -R "{{.CLI_ARGS}}" --output-on-failure; else cd {{.BUILD_DIR}} && ctest --output-on-failure; fi'
 
   format:
     desc: すべてのC++ファイルをフォーマット
     cmds:
       - find . -name "*.cc" -o -name "*.cpp" -o -name "*.h" -o -name "*.hpp" | xargs clang-format -i
-      - echo "✓ フォーマット完了"
 
   format:check:
     desc: フォーマットのチェック

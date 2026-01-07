@@ -1,19 +1,13 @@
 #include "chainhash.h"
-#include <cstdlib>
-
-// ハッシュ関数　tablesizeで割った余りをハッシュ値とする
-uint myhash(Item i, uint tablesize) {
-  return i % tablesize;
-}
 
 // ハッシュテーブルへの挿入
-void insert(Item data, HashTable& table) {
+void insert(Item data, ChainHashTable& table) {
   uint index = myhash(data, table.table_size);
   table.buckets[index].Items.push_back(data);
 }
 
 // ハッシュテーブルからの探索
-bool search(Item query, HashTable& table) {
+bool search(Item query, ChainHashTable& table) {
   uint index = myhash(query, table.table_size);
 
   bool isfound = false;
