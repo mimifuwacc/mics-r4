@@ -5,8 +5,8 @@ on:
     branches: [main]
 
 jobs:
-  format-and-build:
-    name: Format Check & Debug Build
+  ci:
+    name: CI
     runs-on: ubuntu-latest
 
     steps:
