@@ -1,5 +1,9 @@
+---
 # Clang-Format設定ファイル
 # ベースはGoogleスタイルを使用
+
+Language: Cpp
+Standard: c++17
 
 BasedOnStyle: Google
 
