@@ -5,7 +5,11 @@
 // #include "chainhash.h"  // チェイン法を使う場合
 #include "openhash.h"  // 開番地法を使う場合
 
+#include "loadmnist.h"  // MNISTデータ読み込み用
+
 using namespace std;
+
+typedef vector<Item> Database;
 
 int main(int argc, char* argv[]) {
   if (argc < 3) {
@@ -62,6 +66,11 @@ int main(int argc, char* argv[]) {
     cout << "query exists in the database " << endl;
   else
     cout << "query does not exist in the database " << endl;
+
+  // MNISTデータの読み込みテスト
+  MnistDatabase mnist_db;
+  loadMnist("data/test-images.txt", mnist_db);
+  cout << "Loaded " << mnist_db.size() << " MNIST images" << endl;
 
   return 0;
 }
