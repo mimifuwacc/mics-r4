@@ -46,11 +46,8 @@ class LoadMnistTest : public ::testing::Test {
   string test_file;
 
   void SetUp() override {
-    // テスト用一時ファイルを作成（プロセスIDとunixtimeを含めて一意にする）
-    char template_buf[256];
-    snprintf(template_buf, sizeof(template_buf),
-             "/tmp/mics-r4_mnistdb_test_%d_%ld", getpid(), time(nullptr));
-    test_file = template_buf;
+    // テスト用一時ファイルを作成
+    test_file = "/tmp/mics-r4_mnistdb_test_XXXXXX";
     int fd = mkstemp(&test_file[0]);
     if (fd == -1) {
       FAIL() << "Failed to create temp file";
