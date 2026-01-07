@@ -1,6 +1,9 @@
 #include <iostream>
 #include <cstdlib>
-#include "chainhash.h"
+
+// ハッシュ法の選択（この行をコメントアウトして切り替え）
+// #include "chainhash.h"  // チェイン法を使う場合
+#include "openhash.h"  // 開番地法を使う場合
 
 using namespace std;
 
@@ -10,7 +13,7 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
-  HashTable tab;
+  OpenHashTable tab;
   uint i;
 
   // ハッシュテーブルサイズ
