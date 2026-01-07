@@ -20,6 +20,8 @@ jobs:
             clang-format \
             cmake \
             build-essential
+      - name: Check clang format version
+        run: clang-format --version
 
       - name: Install Task
         run: |
