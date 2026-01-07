@@ -36,5 +36,8 @@ jobs:
       - name: Check format
         run: task format:check
 
+      - name: Test
+        run: task test
+
       - name: Build (Debug)
         run: task build
